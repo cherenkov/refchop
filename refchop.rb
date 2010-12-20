@@ -2,8 +2,8 @@ require 'rubygems'
 require 'sinatra'
 
 # reloader
-#require "sinatra/base"
-#require "sinatra/reloader" if development?
+require "sinatra/base"
+require "sinatra/reloader" if development?
 
 require 'net/http'
 require 'base64'
@@ -26,9 +26,8 @@ get '/*' do
   begin
     Net::HTTP.start(img_host, 80) {|http|
       res = http.get(img_path)
-      datauri = 'data:' + mime_type + ';base64,' + Base64.encode64(res.body).gsub(/\n/,"")
-      #response.body = '<img src="' + datauri + '">'
-      response.body = datauri
+      #datauri = 'data:' + mime_type + ';base64,' + Base64.encode64(res.body).gsub(/\n/,"")
+      response.body = res.body
     }
   rescue => e
     p e
