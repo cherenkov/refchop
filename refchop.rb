@@ -6,7 +6,6 @@ require "sinatra/base"
 require "sinatra/reloader" if development?
 
 require 'net/http'
-require 'base64'
 require 'uri'
 require 'mime/types'
 
@@ -25,7 +24,7 @@ get '/*' do
   begin
     Net::HTTP.start(img_host, 80) {|http|
       content_type mime_type
-      res = http.get(img_path)
+      res = http.get(img_path, {'Referer'=>img_url.scheme + '://' + img_host + '/'})
       response.body = res.body
     }
   rescue => e
