@@ -2,7 +2,6 @@ require 'rubygems'
 require 'sinatra'
 
 # reloader
-require "sinatra/base"
 require "sinatra/reloader" if development?
 
 require 'net/http'
@@ -12,19 +11,19 @@ require 'mime/types'
 
 before do
   if request.fullpath == '/'
-    halt 'Hello!'
+    halt 'Hello!<br><a href="https://github.com/cherenkov/refchop">https://github.com/cherenkov/refchop</a>'
   end
 end
 
 get '/*' do
-  img_url = URI.parse(request.fullpath.gsub(/^\//,''))
-  img_host = img_url.host
-  img_path = img_url.path
-  mime_type = MIME::Types.type_for(img_path)[0].to_s
+  url = URI.parse(request.fullpath.gsub(/^\//,''))
+  host = url.host
+  path = url.path
+  mime_type = MIME::Types.type_for(path)[0].to_s
   begin
-    Net::HTTP.start(img_host, 80) {|http|
+    Net::HTTP.start(host, 80) {|http|
       content_type mime_type
-      res = http.get(img_path, {'Referer'=>img_url.scheme + '://' + img_host + '/'})
+      res = http.get(path, {'Referer'=>url.scheme + '://' + host + '/'})
       response.body = res.body
     }
   rescue => e
